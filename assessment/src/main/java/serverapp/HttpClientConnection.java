@@ -16,14 +16,20 @@ public class HttpClientConnection implements Runnable{
     @Override
     public void run(){
         NetworkIO networkIO = null;
-        String request = "";
-        String response = "";
+        String request;
+        byte[] response;
+        byte[] responseresource;
         try{
+            System.out.println("hcc run");
             networkIO = new NetworkIO(s);
             request = networkIO.read();
-            response = utilities.processRequest(request);
-            byte[] bl = response.getBytes("UTF-8");
-            networkIO.write(bl);
+            System.out.println("Print line at hcc run"+ request);
+            response = utilities.processIncomingRequest(request);
+            System.out.println(response.toString());
+            networkIO.write(response);
+            responseresource = utilities.appendRequestFiles(request);
+            if(responseresource!=null)
+                networkIO.write(responseresource);
             networkIO.close();
             s.close();
         } catch (IOException e) {

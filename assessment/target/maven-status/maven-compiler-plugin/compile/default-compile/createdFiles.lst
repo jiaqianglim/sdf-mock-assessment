@@ -1,0 +1,6 @@
+serverapp\HttpClientConnection.class
+serverapp\NetworkIO.class
+serverapp\HttpServer.class
+serverapp\HttpWriter.class
+serverapp\Utilities.class
+serverapp\App.class
