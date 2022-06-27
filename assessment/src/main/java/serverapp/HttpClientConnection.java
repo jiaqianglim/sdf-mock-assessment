@@ -1,39 +1,40 @@
 package serverapp;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
 public class HttpClientConnection implements Runnable{
 
     private Socket s; 
-    private Utilities utilities;
 
-    public HttpClientConnection(Socket sa) throws IOException{ 
-        this.s = sa; 
-        Utilities utilities = new Utilities();
+    public HttpClientConnection(Socket sa){ 
+        s = sa; 
     }
 
     @Override
     public void run(){
-        NetworkIO networkIO = null;
-        String request;
-        byte[] response;
-        byte[] responseresource;
+        System.out.println("Starting client thread");
+        NetworkIO netIO = null;
         try{
-            System.out.println("hcc run");
-            networkIO = new NetworkIO(s);
-            request = networkIO.read();
-            System.out.println("Print line at hcc run"+ request);
-            response = utilities.processIncomingRequest(request);
-            System.out.println(response.toString());
-            networkIO.write(response);
-            responseresource = utilities.appendRequestFiles(request);
-            if(responseresource!=null)
-                networkIO.write(responseresource);
-            networkIO.close();
+            netIO = new NetworkIO(s);
+            String request="";
+            String response="";
+            Utilities utilities = new Utilities();
+            while(true){
+                request = netIO.read();
+                System.out.println("Request is "+request);
+                response = utilities.processIncomingRequest(request);
+                netIO.write(response.getBytes());
+                break;
+            }
+            netIO.close();
             s.close();
-        } catch (IOException e) {
+        }catch(EOFException e){
+            e.printStackTrace();
+        }catch(IOException e){
             e.printStackTrace();
         }
     }
+
 }

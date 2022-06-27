@@ -12,8 +12,7 @@ public class Utilities {
 
     private String[] args;
     private String request;
-    private String responseHttpHead;
-    private byte[] response;
+    private String response;
     private String resource;
     private String directories;
     private Socket s;
@@ -49,17 +48,17 @@ public class Utilities {
         System.out.printf("Port is %s, docRoot is %s\n", HttpServer.port, HttpServer.directories);
     }
 
-    public byte[] processIncomingRequest(String requesta) throws IOException{
+    public String processIncomingRequest(String requesta) throws IOException{
 
         System.out.println("processRequest");
         String request = requesta;
         System.out.println(request);
-        String responseHttpHead;
+        String response;
         //Action 1
         String method = request.split(" ")[0];
         System.out.println(method);
         if(!method.equals("GET")){//Not a GET method
-            responseHttpHead = "HTTP/1.1 405 Method Not Allowed\r\n \r\n "+method+" not supported\r\n";
+            return response = "HTTP/1.1 405 Method Not Allowed\r\n \r\n "+method+" not supported\r\n";
         }
 
         //Action 2
@@ -70,23 +69,20 @@ public class Utilities {
             System.out.println("Resource searched is "+ resource);
         }
         if (!searchForResource(resource)){ //Resource does not exists
-            responseHttpHead = "HTTP/1.1 404 Not Found\r\n \r\n "+resource+" not found\r\n";
+            return response = "HTTP/1.1 404 Not Found\r\n \r\n "+resource+" not found\r\n";
         //Action 4
         }else{//Resource exist
             if(resource.endsWith(".png")){//is a PNG image
-                responseHttpHead = "HTTP/1.1 200 OK\r\n Content-Type: image/png\r\n \r\n";
+                return response = "HTTP/1.1 200 OK\r\n Content-Type: image/png\r\n \r\n";
             }else{//NOT PNG image
                 if(method.equals("GET") && resource.equals("/index.html")){
-                    responseHttpHead = "HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n";
+                    return response = "HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n";
                 }else{
                     //Action 3
-                    responseHttpHead = "HTTP/1.1 200 OK\r\n \r\n";
+                    return response= "HTTP/1.1 200 OK\r\n \r\n";
                 }
             }
         }
-        //Convert String response to byte[]
-        response = responseHttpHead.getBytes();
-        return response;
 
     }
 

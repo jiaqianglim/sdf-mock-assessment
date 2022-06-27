@@ -8,6 +8,7 @@ import java.io.IOException;
  */
 public class App 
 {
+    public static String whichserver = "multi"; //single or multi
 
     public static void main( String[] args ) throws IOException
     {
@@ -24,11 +25,14 @@ public class App
 
         System.out.println( "Task 4 start" );
         HttpServer hs = new HttpServer();
-        //hs.createSinglethreadedServer();
+        if(whichserver.equals("single"))
+            hs.createSinglethreadedServer();
         hs.verifyPath();
         System.out.println( "Task 4 complete" );
 
         System.out.println( "Task 5 start" );
+        if(whichserver.equals("multi"))
+            hs.createMultithreadedServer();
         hs.createMultithreadedServer();
         System.out.println( "Task 5 complete" );
 
